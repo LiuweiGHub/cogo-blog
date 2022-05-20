@@ -46,7 +46,7 @@
 
 ### 二、什么是mmm(3m)架构
 
-![image-20220520182509415](/Users/liuwei/Desktop/cogo-blog/content/后端开发/MYSQL/images/image-20220520182509415.png)
+![image-20220520182509415](./images/image-20220520182509415.png)
 
 **故障转移步骤：**
 
@@ -74,7 +74,7 @@
 
 ### 二、什么是mgr架构
 
-![image-20220520184136971](/Users/liuwei/Desktop/cogo-blog/content/后端开发/MYSQL/images/image-20220520184136971.png)
+![image-20220520184136971](./images/image-20220520184136971.png)
 
 支持多主模式，但官方推荐单主模式：
 
