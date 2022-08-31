@@ -85,6 +85,60 @@ arr.forEach(function (spaceId) {
 
 
 
+推荐写法
+
+```js
+// 数据量过大时通过后台js请求mq-server会有失败的情况，此时需要设计sleep时间 （间隔25ms访问一次）
+// 此方法也设置了trace_id 和 trace_level 避免 sentry报错；同时使消息幂等消费功能生效
+function sleep(ms, callback) {
+    setTimeout(callback, ms)
+}
+
+var size = 1;
+var msg_id = 10000002;
+arr.forEach(function (msg_str) {
+    msg_id++;
+    var settings = {
+        "url": "/api/exchanges/unifiedorder/amq.default/publish",
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            "vhost": "unifiedorder",
+            "name": "amq.default",
+            "properties": {
+                "delivery_mode": 1,
+                "headers": {
+                    "hdf-trace-level": "1.1.1.1"
+                },
+                "message_id": msg_id +""
+            },
+            "routing_key": "unifiedorder_unifiedorder_DividTeamCaseOrderConsumeEvent_TeamCaseOrder_complaincenter",
+            "delivery_mode": "1",
+            "payload": msg_str,
+            "headers": {
+                "hdf-trace-level": "1.1.1.1"
+            },
+            "props": {
+                "message_id": msg_id +""
+            },
+            "payload_encoding": "string"
+        }),
+    };
+
+    sleep(10 * size++, () => {
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+        });
+    })
+
+})
+```
+
+
+
 ### 总结
 
 思路三，虽然非常规手段，这里并不推荐。如果业务这种需求很多，那么提供个PAAS平台功能才是主流。这里只是记录这种解决问题的思路（骚操作）而已~~~
